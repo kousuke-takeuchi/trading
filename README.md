@@ -3,15 +3,33 @@
 
 ## Data Tools API
 
-【未完成】FXヒストリカルデータのローカルダウンロード/ロード
+FXヒストリカルデータのローカルダウンロード/ロード
+
+ロード時のTF:TimeFrameは下記で指定可能
+
++ 分 - 'T'
++ 時 - 'H'
++ 日 - 'D'
++ 週 - 'W'
++ 月 - 'M'
 
 ```python
 from datatools import historical
 
 # ダウンロード
-historical.download_local(path='.data')
+historical.download_local()
+
 # ローカルデータの読み込み
-data = historical.load_local(path='.data')
+data = historical.load_local('EURUSD', '2017', tf='W')
+# > 2017年のEURUSDデータを週単位で取得
+# Time        Open     High     Low      Close
+# 2017-01-08  1.05155  1.06214  1.03406  1.05306
+# 2017-01-15  1.05284  1.06847  1.04537  1.06425
+# 2017-01-22  1.06047  1.07197  1.05793  1.06988
+# 2017-01-29  1.07004  1.07747  1.06576  1.06963
+# 2017-02-05  1.07204  1.08287  1.06201  1.07825
+# 2017-02-12  1.07869  1.07912  1.06076  1.06386
+# 2017-02-19  1.06263  1.06792  1.05213  1.06127
 ```
 
 みん株の指標取得
@@ -22,7 +40,7 @@ from datatools import minkabu
 calendar = minkabu.fetch()
 for item in calendar:
   print(item)
-
+# >
 #  日付: 2018-05-18
 #  指標一覧:
 #    発表時間: 08:30

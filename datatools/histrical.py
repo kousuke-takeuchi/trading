@@ -4,10 +4,13 @@ import zipfile
 import requests
 from bs4 import BeautifulSoup
 
+import numpy as np
+import pandas as pd
+
 from pairs import PAIR_LIST
 
 DOMAIN = 'http://www.histdata.com'
-BASE_URL = DOMAIN + '/download-free-forex-data/?/metatrader/1-minute-bar-quotes/{}'
+BASE_URL = DOMAIN + '/download-free-forex-data/?/ascii/1-minute-bar-quotes/{}'
 
 
 def download(url, form, path=None, ignore_exists=True):
@@ -62,6 +65,7 @@ def get_download_form(url):
     hiddens = soup.select('form#file_down input[type="hidden"]')
     return dict([[hidden["name"], hidden["value"]] for hidden in hiddens])
 
+
 def download_local(path='.data', pair=None, ignore_exists=True):
     # 全てのペアリストに対してダウンロード先のリンクを取得
     pair_list = [pair] if pair else PAIR_LIST
@@ -71,10 +75,41 @@ def download_local(path='.data', pair=None, ignore_exists=True):
             form = get_download_form(url)
             download(url, form, ignore_exists=ignore_exists)
 
+# dfのデータからtfで指定するタイムフレームの4本足データを作成する関数
+def TF_ohlc(df, tf):
+    x = df.resample(tf).ohlc()
+    O = x['Open']['open']
+    H = x['High']['high']
+    L = x['Low']['low']
+    C = x['Close']['close']
+    ret = pd.DataFrame({'Open': O, 'High': H, 'Low': L, 'Close': C},
+                       columns=['Open','High','Low','Close'])
+    return ret.dropna()
 
-def load_local(path='.data'):
-    pass
+
+def load_local(pair, year, tf='H', path='.data'):
+    """
+    【参考】 https://qiita.com/toyolab/items/e8292d2f051a88517cb2
+    [tf]
+    分 - 'T'
+    時 - 'H'
+    日 - 'D'
+    週 - 'W'
+    月 - 'M'
+    """
+    filename = os.path.join(path, pair, year, 'DAT_ASCII_{}_M1_{}.csv'.format(pair, year))
+    dataM1 = pd.read_csv(filename, sep=';',
+                         names=('Time','Open','High','Low','Close', ''),
+                         index_col='Time', parse_dates=True)
+    dataM1.index += pd.offsets.Hour(7) #7時間のオフセット
+    ohlc = TF_ohlc(dataM1, tf)
+    return ohlc
 
 
-download_local()
-# download('EURUSD', '201805', 'cc5f41f1a10f4efc64f3e5c038f127ad')
+if __name__ == '__main__':
+    # データのダウンロード
+    # download_local()
+
+    # 一週間ごとのデータを取得
+    data = load_local('EURUSD', '2017', tf='W')
+    print(data)
