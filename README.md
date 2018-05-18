@@ -32,6 +32,17 @@ data = historical.load_local('EURUSD', '2017', tf='W')
 # 2017-02-19  1.06263  1.06792  1.05213  1.06127
 ```
 
+ローソク足チャートの表示
+
+```python
+from datatools import historical, chart
+
+data = historical.load_local('EURUSD', '2017', tf='D')
+chart.preview_candlestick(data)
+```
+
+![chart](http://res.cloudinary.com/selfolio/image/upload/v1526639731/fig_qrjsky.png)
+
 みん株の指標取得
 
 ```python

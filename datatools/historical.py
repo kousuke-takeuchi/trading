@@ -111,5 +111,5 @@ if __name__ == '__main__':
     # download_local()
 
     # 一週間ごとのデータを取得
-    data = load_local('EURUSD', '2017', tf='W')
+    data = load_local('EURUSD', '2017', tf='H')
     print(data)
