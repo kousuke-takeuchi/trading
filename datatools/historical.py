@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
 
-from pairs import PAIR_LIST
+from .pairs import PAIR_LIST
 
 DOMAIN = 'http://www.histdata.com'
 BASE_URL = DOMAIN + '/download-free-forex-data/?/ascii/1-minute-bar-quotes/{}'
@@ -108,7 +108,7 @@ def load_local(pair, year, tf='H', path='.data'):
 
 if __name__ == '__main__':
     # データのダウンロード
-    # download_local()
+    download_local()
 
     # 一週間ごとのデータを取得
     data = load_local('EURUSD', '2017', tf='H')
