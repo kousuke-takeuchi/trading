@@ -34,6 +34,13 @@ def fabx(data, dimention, width):
         results.append(value)
     return np.exp(np.asarray(results) * dimention)
 
+def predict(data, indices, threashold):
+    ud = indices > threashold
+    predicts_ud = ud.astype(int)
+    predicts_ud = predicts_ud + (predicts_ud - 1)
+    predicts = data + indices * predicts_ud
+    return predicts
+
 if __name__ == '__main__':
     print(sector_partitions(7, 180))
     print(create_sector(7, 180))

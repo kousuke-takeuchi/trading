@@ -1,9 +1,9 @@
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
-from mpl_finance import candlestick2_ohlc, volume_overlay
-
-from historical import load_local
+# from mpl_finance import candlestick2_ohlc, volume_overlay
+import matplotlib.cm as cm
+# %matplotlib inline
 
 
 def convert_time64(data):
@@ -23,6 +23,26 @@ def preview_candlestick(data):
 
     plt.show()
 
+def double_linechart(x, y1, y2, label1='', label2=''):
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    ln1 = ax1.plot(x, y1, 'C0', label=label1)
+
+    ax2 = ax1.twinx()
+    ln2 = ax2.plot(x, y2, 'C1', label=label2)
+
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(h1+h2, l1+l2, loc='lower right')
+
+    ax1.set_xlabel('t')
+    ax1.set_ylabel(label1)
+    ax1.grid(True)
+    ax2.set_ylabel(label2)
+
+    plt.show()
+
 if __name__ == '__main__':
+    from historical import load_local
     data = load_local('EURUSD', '2017', tf='D')
     preview_candlestick(data[:50])
